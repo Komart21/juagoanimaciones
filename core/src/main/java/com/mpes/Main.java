@@ -21,29 +21,27 @@ public class Main extends ApplicationAdapter {
     private float stateTime;
     private float bgPosx, bgPosy;
 
-    private final float SPEED = 200f; // Velocidad del fondo
+    private final float SPEED = 200f;
 
-    // Definimos las áreas para el joystick virtual
     private Rectangle up, down, left, right;
     private final int IDLE = 0, UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4;
 
     // Almacenar la última dirección para usarla con el joystick
-    private int lastDirection = DOWN; // Cambiamos para que la dirección inicial sea "abajo"
+    private int lastDirection = DOWN;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        spriteSheet = new Texture(Gdx.files.internal("Sprite.png")); // Cargamos el sprite del personaje
-        background = new Texture(Gdx.files.internal("fondo.jpg"));   // Cargamos el fondo
+        spriteSheet = new Texture(Gdx.files.internal("Sprite.png"));
+        background = new Texture(Gdx.files.internal("fondo.jpg"));
         background.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
 
         // Dividimos el sprite en cuadros de 32x32 (ajusta esto si es diferente)
         spriteFrames = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / 4, spriteSheet.getHeight() / 4);
 
-        // Intercambiamos las animaciones de caminar arriba y abajo
         // Creamos animaciones para cada dirección (Nota: intercambiamos filas 0 y 1)
-        walkDown = new Animation<>(0.1f, spriteFrames[0]); // Corregido: Ahora la fila 0 es caminar hacia abajo
-        walkUp = new Animation<>(0.1f, spriteFrames[1]);   // Corregido: Ahora la fila 1 es caminar hacia arriba
+        walkDown = new Animation<>(0.1f, spriteFrames[0]);
+        walkUp = new Animation<>(0.1f, spriteFrames[1]);
         walkLeft = new Animation<>(0.1f, spriteFrames[2]);
         walkRight = new Animation<>(0.1f, spriteFrames[3]);
 
@@ -87,16 +85,16 @@ public class Main extends ApplicationAdapter {
     private void handleInput() {
         float delta = Gdx.graphics.getDeltaTime();
         int direction = virtualJoystickControl(); // Control por joystick virtual
-        boolean moving = false; // Variable para comprobar si el jugador se está moviendo
+        boolean moving = false;
 
         // Control del teclado
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || direction == UP) {
-            bgPosy -= SPEED * delta; // "Arriba" reduce el valor de Y (corregido)
+            bgPosy -= SPEED * delta;
             lastDirection = UP;
             moving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || direction == DOWN) {
-            bgPosy += SPEED * delta; // "Abajo" incrementa el valor de Y (corregido)
+            bgPosy += SPEED * delta;
             lastDirection = DOWN;
             moving = true;
         }
@@ -120,27 +118,27 @@ public class Main extends ApplicationAdapter {
     private TextureRegion getCurrentFrame() {
         // Si el jugador se está moviendo, mostramos la animación de movimiento
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || lastDirection == UP) {
-            return walkUp.getKeyFrame(stateTime, true); // Movimiento hacia arriba
+            return walkUp.getKeyFrame(stateTime, true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || lastDirection == DOWN) {
-            return walkDown.getKeyFrame(stateTime, true); // Movimiento hacia abajo
+            return walkDown.getKeyFrame(stateTime, true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || lastDirection == LEFT) {
-            return walkLeft.getKeyFrame(stateTime, true); // Movimiento hacia la izquierda
+            return walkLeft.getKeyFrame(stateTime, true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || lastDirection == RIGHT) {
-            return walkRight.getKeyFrame(stateTime, true); // Movimiento hacia la derecha
+            return walkRight.getKeyFrame(stateTime, true);
         }
 
         // Si el jugador está quieto, mantenemos la animación en la última dirección
         switch (lastDirection) {
             case UP:
-                return walkUp.getKeyFrame(0, true); // Última dirección: arriba
+                return walkUp.getKeyFrame(0, true);
             case DOWN:
-                return walkDown.getKeyFrame(0, true); // Última dirección: abajo
+                return walkDown.getKeyFrame(0, true);
             case LEFT:
-                return walkLeft.getKeyFrame(0, true); // Última dirección: izquierda
+                return walkLeft.getKeyFrame(0, true);
             case RIGHT:
-                return walkRight.getKeyFrame(0, true); // Última dirección: derecha
+                return walkRight.getKeyFrame(0, true);
             default:
-                return walkDown.getKeyFrame(0, true); // Si algo falla, por defecto mirar hacia abajo
+                return walkDown.getKeyFrame(0, true);
         }
     }
 
